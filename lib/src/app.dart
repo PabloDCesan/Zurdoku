@@ -26,7 +26,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/main-menu',
-        builder: (context, state) => const MainMenuScreen(),
+        //builder: (context, state) => const MainMenuScreen(),
+        pageBuilder: (context, state) =>
+          const NoTransitionPage(child: MainMenuScreen()),
       ),
       GoRoute(
         path: '/difficulty',
@@ -42,11 +44,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/achievements',
-        builder: (context, state) => const AchievementsScreen(),
+        //builder: (context, state) => const AchievementsScreen(),
+        pageBuilder: (context, state) =>
+          const NoTransitionPage(child: AchievementsScreen()),
       ),
       GoRoute(
         path: '/about',
-        builder: (context, state) => const AboutScreen(),
+        // builder: (context, state) => const AboutScreen(),
+        pageBuilder: (context, state) =>
+          const NoTransitionPage(child: AboutScreen()),
       ),
     ],
   );

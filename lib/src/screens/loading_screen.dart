@@ -16,6 +16,14 @@ class _LoadingScreenState extends ConsumerState<LoadingScreen>
   late Animation<double> _logoAnimation;
   late Animation<double> _progressAnimation;
 
+  static const _assetsToPrecache = [
+    //cosas para pre cachear
+    'assets/images/mainMenu_clean.png',
+    'assets/images/mainMenu_lineas.png',
+    
+  ];
+
+
   @override
   void initState() {
     super.initState();
@@ -57,7 +65,15 @@ class _LoadingScreenState extends ConsumerState<LoadingScreen>
       if (mounted) {
         _progressAnimationController.forward().then((_) {
           if (mounted) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              // Precarga de lo q declare antes
+              await Future.wait(
+                _assetsToPrecache.map((p) => precacheImage(AssetImage(p), context)),
+              );
+              if (mounted) {
             context.go('/main-menu');
+              }
+            });
           }
         });
       }

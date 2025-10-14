@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/bottom_nav_provider.dart';
 import 'package:flutter/services.dart';
+import '../widgets/bottom_trapezoid_buttons.dart';
 
 class MainMenuScreen extends ConsumerWidget {
   const MainMenuScreen({super.key});
@@ -88,6 +89,7 @@ class MainMenuScreen extends ConsumerWidget {
               
               */
               
+              /*
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -128,7 +130,30 @@ class MainMenuScreen extends ConsumerWidget {
               ),],),
               
               const SizedBox(height: 20),
-            ],
+              //botonera vieja 
+              */
+
+              SafeArea(
+              bottom: true,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 15), // ← margen izq/der y un poco abajo
+                child: BottomTrapezoidButtons(
+                  onStart:     () => context.go('/difficulty'),
+                  onContinue:  () => context.go('/game'),
+                  onOptions:   () => context.go('/options'),
+                  height: 265,
+                  topLeftY: 0,    // arriba más alto en la izquierda
+                  topRightY: 166,  // cae hacia la derecha
+                  splitRatio: 0.545,
+                  //yLeftSplit: 0, // altura en el lado izquierdo de la división izquierda
+                  leftSplitLeftY: 162,   // altura en el lado izquierdo de la división
+                  leftSplitRightY: 185, // altura en el lado derecho de la división izquierda
+                  // containerColor: const Color(0xFF7A1E1A), // opcional
+                    ),
+                  ),
+                )
+
+              ],
           ),
         ),
       ),
@@ -168,6 +193,7 @@ class MainMenuScreen extends ConsumerWidget {
     }
   }
 
+/*
   Widget _buildMenuButton({
     required BuildContext context,
     required String text,
@@ -205,5 +231,6 @@ class MainMenuScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
+  } 
+  */
 }
