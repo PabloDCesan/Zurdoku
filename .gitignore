@@ -1,0 +1,113 @@
+# =======================================
+#   ZURDOKU - Flutter Project .gitignore
+# =======================================
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# =======================================
+#   IDEs y herramientas
+# =======================================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code (descomenta si querés ignorar tu configuración local)
+.vscode/
+
+# =======================================
+#   Flutter / Dart / Pub
+# =======================================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+/coverage/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+generated_plugin_registrant.dart
+
+# =======================================
+#   Android
+# =======================================
+**/android/.gradle/
+**/android/local.properties
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/gradle-wrapper.jar
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+**/android/app/google-services.json
+**/android/app/key.jks
+
+# =======================================
+#   iOS
+# =======================================
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# =======================================
+#   macOS
+# =======================================
+**/macos/Flutter/ephemeral/
+**/macos/Pods/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# =======================================
+#   Windows
+# =======================================
+**/windows/flutter/ephemeral/
+
+# =======================================
+#   Linux
+# =======================================
+**/linux/flutter/ephemeral/
+
+# =======================================
+#   Web
+# =======================================
+**/web/.dart_tool/
+**/web/build/
+**/web/.firebase/
+
+# =======================================
+#   Symbolication & Obfuscation
+# =======================================
+app.*.symbols
+app.*.map.json
+
+# =======================================
+#   Entornos / Configuración
+# =======================================
+.env
+.env.*
+test_output/
+coverage/
+reports/
+
+# =======================================
+#   Archivos del sistema
+# =======================================
+Thumbs.db
