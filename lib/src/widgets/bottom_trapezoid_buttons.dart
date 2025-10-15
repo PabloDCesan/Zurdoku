@@ -71,8 +71,8 @@ class BottomTrapezoidButtons extends StatelessWidget {
 
             // división vertical fija (x constante)
             final xSplit = w * splitRatio;
-            // división horizontal para los dos botones izquierdos
-            final midY = h / 1.6;
+            // división horizontal para los dos botones izquierdos -> se dejo de usar para poder hacer linea con caida
+            // final midY = h / 1.6;
 
             //caida de la división izquierda
             double yLeftSplit(double x) {
@@ -102,62 +102,126 @@ class BottomTrapezoidButtons extends StatelessWidget {
               ..lineTo(xSplit, h)
               ..close();
 
-            final cs = Theme.of(context).colorScheme;
-            final bgColor = containerColor ?? const Color(0xFF7A1E1A);
-            final fill   = cs.primary.withOpacity(buttonFillOpacity);
-            final border = cs.primary.withOpacity(buttonStrokeOpacity);
+            //final cs = Theme.of(context).colorScheme;
+            //final bgColor = containerColor ?? const Color(0xFF7A1E1A);
+            //final fill   = cs.primary.withAlpha((255 * buttonFillOpacity).round());
+            //final border = cs.primary.withAlpha((255 * buttonStrokeOpacity).round());
 
+            /*
+            para poder usar imagen onTapDown, hubo que eliminar este Widget y crear un class que maneje estados
             Widget polyButton({
               required Path Function() pathBuilder,
               required VoidCallback onTap,
-              required Widget label,
+              // required Widget label,
+              String? pngAsset,                 // <-- PNG de fondo!
+              BoxFit imageFit = BoxFit.cover,
+              Alignment imageAlignment = Alignment.center
             }) {
-              return CustomPaint(
-                painter: _PolyPainter(pathBuilder, fill, border),
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    onTap: onTap,
-                    customBorder: _PolygonBorder((_) => pathBuilder()),
-                    splashFactory: InkRipple.splashFactory,
-                    child: const SizedBox.expand(),
-                  ),
-                ),
-              );
-            }
+              final p = pathBuilder();
+              final bounds = p.getBounds();
+              // Path trasladado a (0,0) para el ClipPath local
+              final localPath = p.shift(-bounds.topLeft);
+
+
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (pngAsset != null)
+                    Positioned.fromRect(
+                      rect: bounds,
+                      child: ClipPath(
+                        clipper: _LocalPathClipper(localPath),
+                        child: Image.asset(
+                          pngAsset,
+                          // fit: imageFit,
+                          fit: BoxFit.fill,              // cover para llenar el polígono!
+                          alignment: imageAlignment,
+                        ),
+                      ),
+                    ),
+                
+                    // interacción y splash, recortada al polígono
+                    /* Imagenes ok, pero no hit-test de los botones
+                     Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          onTap: onTap,
+                          //customBorder: _PolygonBorder((_) => pathBuilder()), // <- hit-test poligonal
+                          customBorder: _PolygonBorder((_) => p),
+                          splashFactory: InkRipple.splashFactory,
+                          child: const SizedBox.expand(),
+                        ),
+                      ),
+                      */
+
+                    // PRUEBA: limitar al rectángulo del polígono + clip de hit-test
+                      Positioned.fromRect(
+                        rect: bounds,
+                        child: ClipPath(
+                          clipper: _LocalPathClipper(localPath), // <- clippea pintura y hit-test
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: InkWell(
+                              onTap: onTap,
+                              
+                              customBorder: _PolygonBorder((_) => p),
+                              splashFactory: InkRipple.splashFactory,
+                              child: const SizedBox.expand(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Overlay (texto/icono) centrado y sin interceptar taps
+                    //  if (overlay != null)
+                    //    IgnorePointer(
+                    //      child: Center(child: overlay),
+                    //    ),
+                    ],
+                  );
+                }
+                 */ 
+                
+
+            
 
             return ClipPath(
               clipper: _PathClipper(containerPath),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  CustomPaint(painter: _PolyFillOnly(containerPath, bgColor)),
+                  // CustomPaint(painter: _PolyFillOnly(containerPath, bgColor)),
 
                   // Izquierda arriba
-                  polyButton(
+                  _PolyImageButton(
                     pathBuilder: leftTop,
                     onTap: onStart,
-                    label: _btnLabel(context, 'COMENZAR', Icons.play_arrow_rounded),
+                    // label: _btnLabel(context, 'COMENZAR', Icons.play_arrow_rounded),
+                    assetNormal: 'assets/images/btn_start1.png',
+                    assetPressed: 'assets/images/btn_start2.png',
                   ),
 
                   // Izquierda abajo
-                  polyButton(
+                  _PolyImageButton(
                     pathBuilder: leftBottom,
                     onTap: onContinue,
-                    label: _btnLabel(context, 'CONTINUAR', Icons.history_rounded),
+                    //label: _btnLabel(context, 'CONTINUAR', Icons.history_rounded),
+                    assetNormal: 'assets/images/btn_cont1.png',
+                    assetPressed: 'assets/images/btn_cont2.png',
                   ),
 
                   // Derecha completa
-                  polyButton(
+                  _PolyImageButton(
                     pathBuilder: rightFull,
                     onTap: onOptions,
-                    label: _btnLabel(context, 'OPCIONES', Icons.tune_rounded),
+                    //label: _btnLabel(context, 'OPCIONES', Icons.tune_rounded),
+                    assetNormal: 'assets/images/btn_opt1.png',
+                    assetPressed: 'assets/images/btn_opt2.png',
                   ),
 
                   // Etiquetas centradas (opcional y editable)
-                  _centerLabel(leftTop,     _btnLabel(context, 'COMENZAR',  Icons.play_arrow_rounded)),
-                  _centerLabel(leftBottom,  _btnLabel(context, 'CONTINUAR', Icons.history_rounded)),
-                  _centerLabel(rightFull,   _btnLabel(context, 'OPCIONES',  Icons.tune_rounded)),
+                  //_centerLabel(leftTop,     _btnLabel(context, 'COMENZAR',  Icons.play_arrow_rounded)),
+                  //_centerLabel(leftBottom,  _btnLabel(context, 'CONTINUAR', Icons.history_rounded)),
+                  //_centerLabel(rightFull,   _btnLabel(context, 'OPCIONES',  Icons.tune_rounded)),
                 ],
               ),
             );
@@ -167,6 +231,7 @@ class BottomTrapezoidButtons extends StatelessWidget {
     );
   }
 
+  /*
   static Widget _centerLabel(Path Function() path, Widget child) {
     // Centrado visual simple: usamos Stack + Center
     
@@ -190,7 +255,7 @@ class BottomTrapezoidButtons extends StatelessWidget {
         ],
       ),
     );
-  }
+  }*/
 }
 
 /// ==== helpers privados ====
@@ -216,11 +281,13 @@ class _PolygonBorder extends ShapeBorder {
       getOuterPath(rect, textDirection: textDirection);
 }
 
+/* Prueba inicial con pintura. Despues se optó por usar imágenes.
 class _PolyPainter extends CustomPainter {
   final Path Function() build;
   final Color fill;
   final Color stroke;
   _PolyPainter(this.build, this.fill, this.stroke);
+  
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -253,7 +320,7 @@ class _PolyFillOnly extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PolyFillOnly old) => false;
 }
-
+*/
 class _PathClipper extends CustomClipper<Path> {
   final Path Function() build;
   _PathClipper(this.build);
@@ -263,5 +330,100 @@ class _PathClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant _PathClipper oldClipper) => false;
+}
+/// Clipper que recibe un path ya en coordenadas locales (0..width, 0..height)
+class _LocalPathClipper extends CustomClipper<Path> {
+  final Path path;
+  _LocalPathClipper(this.path);
+  @override
+  Path getClip(Size size) => path;
+  @override
+  bool shouldReclip(covariant _LocalPathClipper oldClipper) => false;
+}
+
+
+// Widget para usar imagenes para estados normal/pressed
+class _PolyImageButton extends StatefulWidget {
+  const _PolyImageButton({
+    super.key,
+    required this.pathBuilder,
+    required this.onTap,
+    required this.assetNormal,
+    required this.assetPressed,
+    //this.fit = BoxFit.fill,
+    //this.alignment = Alignment.center,
+    
+  });
+
+  final Path Function() pathBuilder;
+  final VoidCallback onTap;
+  final String assetNormal;
+  final String assetPressed;
+  //final BoxFit fit;
+  //final Alignment alignment;
+
+  @override
+  State<_PolyImageButton> createState() => _PolyImageButtonState();
+}
+
+class _PolyImageButtonState extends State<_PolyImageButton> {
+  bool _pressed = false;
+
+  @override
+  void didChangeDependencies() {
+    // Precarga para que no haya flicker al primer press
+    precacheImage(AssetImage(widget.assetNormal), context);
+    precacheImage(AssetImage(widget.assetPressed), context);
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.pathBuilder();
+    final bounds = p.getBounds();
+    final localPath = p.shift(-bounds.topLeft);
+    final asset = _pressed ? widget.assetPressed : widget.assetNormal;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Imagen recortada al polígono, escalada al bounding box del polígono
+        Positioned.fromRect(
+          rect: bounds,
+          child: ClipPath(
+            clipper: _LocalPathClipper(localPath),
+            child: Image.asset(
+              asset,
+              fit: BoxFit.fill,
+              alignment: Alignment.center,
+            ),
+          ),
+        ),
+
+        // Interacción: limitada al polígono (clip) y splash recortado
+        Positioned.fromRect(
+          rect: bounds,
+          child: ClipPath(
+            clipper: _LocalPathClipper(localPath),
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: widget.onTap,
+                onTapDown: (_) => setState(() => _pressed = true),
+                onTapUp: (_) => setState(() => _pressed = false),
+                onTapCancel: () => setState(() => _pressed = false),
+                customBorder: _PolygonBorder((_) => p),
+                // Desactiva overlays para ver solo el  solo el swap de imagen
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: const SizedBox.expand(),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 // Fin de este horror
