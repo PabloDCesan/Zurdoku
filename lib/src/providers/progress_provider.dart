@@ -22,7 +22,7 @@ class ProgressStateNotifier extends Notifier<GameProgress> {
         timesMap.forEach((key, value) {
           final difficulty = Difficulty.values.firstWhere(
             (d) => d.name == key,
-            orElse: () => Difficulty.beginner,
+            orElse: () => Difficulty.facil,
           );
           bestTimes[difficulty] = Duration(milliseconds: value);
         });
@@ -35,6 +35,7 @@ class ProgressStateNotifier extends Notifier<GameProgress> {
       final musicEnabled = prefs.getBool('music_enabled') ?? true;
       final soundEffectsEnabled = prefs.getBool('sound_effects_enabled') ?? true;
       final currentTheme = prefs.getString('current_theme') ?? 'light';
+      final musicVolume = (prefs.getDouble('music_volume') ?? 0.7).clamp(0.0, 1.0);
 
       state = GameProgress(
         bestTimes: bestTimes,
@@ -42,6 +43,7 @@ class ProgressStateNotifier extends Notifier<GameProgress> {
         musicEnabled: musicEnabled,
         soundEffectsEnabled: soundEffectsEnabled,
         currentTheme: currentTheme,
+        musicVolume: musicVolume,
       );
     } catch (e) {
       // Si hay error, usar valores por defecto
@@ -66,6 +68,7 @@ class ProgressStateNotifier extends Notifier<GameProgress> {
       // Guardar configuraciones
       await prefs.setBool('music_enabled', state.musicEnabled);
       await prefs.setBool('sound_effects_enabled', state.soundEffectsEnabled);
+      await prefs.setDouble('music_volume', state.musicVolume);
       await prefs.setString('current_theme', state.currentTheme);
     } catch (e) {
       // Manejar error de guardado
@@ -127,6 +130,12 @@ class ProgressStateNotifier extends Notifier<GameProgress> {
     await _saveProgress();
   }
 
+  Future<void> setMusicVolume(double v) async {
+    final vol = v.clamp(0.0, 1.0);
+    state = state.copyWith(musicVolume: vol);
+    await _saveProgress();
+  }
+
   Future<void> resetProgress() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -136,6 +145,15 @@ class ProgressStateNotifier extends Notifier<GameProgress> {
     } catch (e) {
       // Manejar error de reset
     }
+  }
+
+  Future<void> unlockThemeById(String themeId) async {
+    if (state.unlockedThemes.contains(themeId)) {
+      throw Exception('Tema ya desbloqueado');
+    }
+    final updated = List<String>.from(state.unlockedThemes)..add(themeId);
+    state = state.copyWith(unlockedThemes: updated);
+    await _saveProgress();
   }
 }
 

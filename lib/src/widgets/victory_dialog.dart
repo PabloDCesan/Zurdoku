@@ -5,7 +5,9 @@ import '../models/sudoku.dart';
 import '../providers/progress_provider.dart';
 import 'package:flutter/services.dart';
 
-class VictoryDialog extends ConsumerWidget {
+import '../repos/providers.dart' show leaderboardRepoProvider;
+
+class VictoryDialog extends ConsumerStatefulWidget {
   final Duration completionTime;
   final Difficulty difficulty;
 
@@ -16,11 +18,66 @@ class VictoryDialog extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VictoryDialog> createState() => _VictoryDialogState();
+  }
+
+  class _VictoryDialogState extends ConsumerState<VictoryDialog> {
+    bool _submitted = false;
+
+    @override
+    void initState() {
+      super.initState();
+
+      // Ejecutamos una sola vez post-frame para no bloquear el build.
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (_submitted) return;
+        _submitted = true;
+
+        /*
+        final time = widget.completionTime;
+        final diff = widget.difficulty;
+        final uid = FirebaseAuth.instance.currentUser?.uid;
+
+        if (uid != null) {
+          await ref.read(leaderboardRepoProvider).submit(
+            difficulty: widget.difficulty,
+            timeSec: widget.completionTime.inSeconds,
+            uid: uid,
+            name: null, // o tu displayName si después agregás login real
+          );
+        }
+        
+        await ref.read(progressProvider.notifier)
+           .updateBestTime(widget.difficulty, widget.completionTime);
+      });
+    }
+    */
+        try {
+        // 1) Subir score (el repo toma uid internamente)
+        await ref.read(leaderboardRepoProvider).submit(
+          difficulty: widget.difficulty,
+          timeSec: widget.completionTime.inSeconds,
+          name: null, // o tu displayName si luego querés mostrarlo
+        );
+      } catch (e) {
+        // opcional: loguear o mostrar SnackBar si querés
+        // debugPrint('submit leaderboard error: $e');
+      }
+
+      // 2) Actualizar best time local
+      await ref
+          .read(progressProvider.notifier)
+          .updateBestTime(widget.difficulty, widget.completionTime);
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final progress = ref.watch(progressProvider);
-    final bestTime = progress.getBestTime(difficulty);
-    final isNewRecord = bestTime == null || completionTime < bestTime;
+    final bestTime = progress.getBestTime(widget.difficulty);
+    final isNewRecord = bestTime == null || widget.completionTime < bestTime;
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -61,7 +118,7 @@ class VictoryDialog extends ConsumerWidget {
             
             // Tiempo de completado
             Text(
-              'Tiempo: ${_formatDuration(completionTime)}',
+              'Tiempo: ${_formatDuration(widget.completionTime)}',
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.primaryColor,
                 fontWeight: FontWeight.bold,

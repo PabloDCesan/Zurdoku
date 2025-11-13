@@ -87,7 +87,7 @@ class AppThemes {
 
   static const red = AppTheme(
     name: 'red',
-    displayName: '<3',
+    displayName: 'Cruz Roja',
     code: 'HELPME',
     colors: {
       'primary': Color(0xFFD32F2F),
@@ -104,7 +104,83 @@ class AppThemes {
     },
   );
 
-  static const List<AppTheme> allThemes = [light, dark, blue, red];
+  static const matrix = AppTheme(
+    name: 'matrix',
+    displayName: 'Matrix',
+    code: 'MATRIX',
+    colors: {
+      'primary': Color(0xFF00FF41),                     // verde neón
+      'secondary': Color(0xFF00C853),                   // verde secundario
+      'background': Color(0xFF000000),                  // negro total
+      'background2': Color(0xFF050B06),                 // casi negro
+      'surface': Color(0xFF0A1410),                     // panel oscuro
+      'text': Color(0xFFA0F2B0),                        // verde claro legible
+      'grid': Color(0xFF00C853),                        // líneas de grilla
+      'selected': Color(0xFF003B1F),                    // celda seleccionada
+      'given': Color(0xFF00FF41),                       // números dados
+      'filled': Color(0xFF0AFF66),                      // números jugador
+      'error': Color(0xFFFF1744),                       // error (igual que blue)
+    },
+  );
+
+  static const bocajr = AppTheme(
+    name: 'bocajr',
+    displayName: 'BOCA JR',
+    code: 'BOCAJR',
+    colors: {
+      'primary': Color(0xFFFFCB05),                     // amarillo dorado
+      'secondary': Color(0xFF002561),                   // azul profundo
+      'background': Color(0xFF002561),                  // fondo azul
+      'background2': Color(0xFF003A8C),                 // azul algo más claro
+      'surface': Color(0xFF0A2F73),                     // paneles
+      'text': Color(0xFFFFEE58),                        // texto amarillo claro
+      'grid': Color(0xFFFFCB05),                        // líneas de grilla
+      'selected': Color(0xFFFFE082),                    // celda seleccionada
+      'given': Color(0xFFFFCB05),                       // números dados
+      'filled': Color(0xFFFFE082),                      // números jugador
+      'error': Color(0xFFFF1744),
+    },
+  );
+
+  static const wololo = AppTheme(
+    name: 'wololo',
+    displayName: 'Age Of Empires',
+    code: 'WOLOLO',
+    colors: {
+      'primary': Color(0xFF0045A0),                     // azul equipo
+      'secondary': Color(0xFFA00000),                   // rojo equipo
+      'background': Color(0xFFF0E0C0),                  // papiro
+      'background2': Color(0xFFF8EDDA),                 // papiro claro
+      'surface': Color(0xFFFDF4E3),                     // paneles
+      'text': Color(0xFF4A2B15),                        // marrón tinta
+      'grid': Color(0xFF7B4B26),                        // líneas pergamino
+      'selected': Color(0xFFFFF2D5),                    // celda seleccionada
+      'given': Color(0xFF0045A0),                       // números dados (azul)
+      'filled': Color(0xFFA00000),                      // números jugador (rojo)
+      'error': Color(0xFFC62828),
+    },
+  );
+
+  static const gameboy = AppTheme(
+    name: 'gameboy',
+    displayName: 'GAME BOY',
+    code: 'GBDMG1',
+    colors: {
+      'primary': Color(0xFF4A6B3F),                     // verde oscuro
+      'secondary': Color(0xFF8BAE67),                   // verde medio
+      'background': Color(0xFFCADFA4),                  // verde claro (fondo)
+      'background2': Color(0xFFA8C27C),                 // verde intermedio
+      'surface': Color(0xFFDCE8B8),                     // paneles
+      'text': Color(0xFF2E4728),                        // texto/num oscuro
+      'grid': Color(0xFF8BAE67),                        // líneas de grilla
+      'selected': Color(0xFFE8F3C8),                    // celda seleccionada
+      'given': Color(0xFF4A6B3F),                       // números dados
+      'filled': Color(0xFF2E4728),                      // números jugador
+      'error': Color(0xFFB71C1C),
+    },
+  );
+
+  static const List<AppTheme> allThemes = [light, dark, blue, red, matrix, bocajr, wololo, gameboy];
 
   static AppTheme getThemeByName(String name) {
     return allThemes.firstWhere(

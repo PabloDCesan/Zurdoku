@@ -133,15 +133,15 @@ class SudokuGenerator {
 
   static int _getCellsToRemove(Difficulty difficulty) {
     switch (difficulty) {
-      case Difficulty.beginner:
+      case Difficulty.facil:
         return 30; // 51 celdas llenas
-      case Difficulty.medium:
+      case Difficulty.medio:
         return 40; // 41 celdas llenas
-      case Difficulty.advanced:
+      case Difficulty.avanzado:
         return 50; // 31 celdas llenas
-      case Difficulty.expert:
+      case Difficulty.experto:
         return 55; // 26 celdas llenas
-      case Difficulty.master:
+      case Difficulty.maestro:
         return 60; // 21 celdas llenas
     }
   }

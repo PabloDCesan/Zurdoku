@@ -75,7 +75,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo o gráfico central
+                    // Logo!
                     Container(
                       width: 120,
                       height: 120,
@@ -121,7 +121,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'BRAINIAC Studios',
+                      'CESAN Studios',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,

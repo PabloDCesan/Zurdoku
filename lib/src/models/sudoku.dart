@@ -1,9 +1,9 @@
 enum Difficulty {
-  beginner,
-  medium,
-  advanced,
-  expert,
-  master,
+  facil,
+  medio,
+  avanzado,
+  experto,
+  maestro,
 }
 
 enum CellState {
@@ -21,6 +21,9 @@ class SudokuCell {
   bool isSelected;
   bool isHighlighted;
 
+  // Sentinel privado para detectar “parámetro no pasado”
+  static const Object _unset = Object();
+
   SudokuCell({
     required this.row,
     required this.col,
@@ -31,7 +34,7 @@ class SudokuCell {
   });
 
   SudokuCell copyWith({
-    int? value,
+    Object? value = _unset, //era un int, pero uso esto como centinel, asi borra lo q deberia estar vacio
     CellState? state,
     bool? isSelected,
     bool? isHighlighted,
@@ -39,7 +42,7 @@ class SudokuCell {
     return SudokuCell(
       row: row,
       col: col,
-      value: value ?? this.value,
+      value: identical(value, _unset) ? this.value : value as int?,
       state: state ?? this.state,
       isSelected: isSelected ?? this.isSelected,
       isHighlighted: isHighlighted ?? this.isHighlighted,
@@ -103,6 +106,7 @@ class GameProgress {
   final bool musicEnabled;
   final bool soundEffectsEnabled;
   final String currentTheme;
+  final double musicVolume;
 
   GameProgress({
     this.bestTimes = const {},
@@ -110,6 +114,7 @@ class GameProgress {
     this.musicEnabled = true,
     this.soundEffectsEnabled = true,
     this.currentTheme = 'light',
+    this.musicVolume = 0.7,
   });
 
   GameProgress copyWith({
@@ -118,6 +123,7 @@ class GameProgress {
     bool? musicEnabled,
     bool? soundEffectsEnabled,
     String? currentTheme,
+    double? musicVolume,
   }) {
     return GameProgress(
       bestTimes: bestTimes ?? this.bestTimes,
@@ -125,6 +131,7 @@ class GameProgress {
       musicEnabled: musicEnabled ?? this.musicEnabled,
       soundEffectsEnabled: soundEffectsEnabled ?? this.soundEffectsEnabled,
       currentTheme: currentTheme ?? this.currentTheme,
+      musicVolume: musicVolume ?? this.musicVolume,
     );
   }
 
@@ -136,9 +143,5 @@ class GameProgress {
     return unlockedThemes.contains(theme);
   }
 
-  void unlockTheme(String theme) {
-    if (!unlockedThemes.contains(theme)) {
-      unlockedThemes.add(theme);
-    }
-  }
+
 }

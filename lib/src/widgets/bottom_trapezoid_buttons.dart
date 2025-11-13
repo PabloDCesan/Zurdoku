@@ -345,7 +345,7 @@ class _LocalPathClipper extends CustomClipper<Path> {
 // Widget para usar imagenes para estados normal/pressed
 class _PolyImageButton extends StatefulWidget {
   const _PolyImageButton({
-    super.key,
+    //super.key,
     required this.pathBuilder,
     required this.onTap,
     required this.assetNormal,

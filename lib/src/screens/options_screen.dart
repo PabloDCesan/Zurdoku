@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/progress_provider.dart';
+//import '../audio/audio_controller.dart';
+import '../audio/audio_provider.dart';
+import '../repos/providers.dart'; 
 
 class OptionsScreen extends ConsumerStatefulWidget {
   const OptionsScreen({super.key});
@@ -13,11 +16,32 @@ class OptionsScreen extends ConsumerStatefulWidget {
 
 class _OptionsScreenState extends ConsumerState<OptionsScreen> {
   final TextEditingController _codeController = TextEditingController();
+  bool _submitting = false;
+  bool _syncedOnce = false;
 
   @override
   void dispose() {
     _codeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_syncedOnce) {
+      _syncedOnce = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final progress = ref.read(progressProvider);
+        final audio = ref.read(audioControllerProvider);
+        audio.setVolume(progress.musicVolume);
+        audio.mute(!progress.musicEnabled);
+      });
+    }
   }
 
   @override
@@ -58,20 +82,36 @@ class _OptionsScreenState extends ConsumerState<OptionsScreen> {
                         subtitle: const Text('Activar música de fondo'),
                         value: progress.musicEnabled,
                         onChanged: (value) {
+                          // 1) Persistir
                           ref.read(progressProvider.notifier).setMusicEnabled(value);
+                          // 2) Aplicar al controller ya mismo (opcional, ref.listen arriba igual lo hará)
+                          final audio = ref.read(audioControllerProvider);
+                          audio.mute(!value);
+                          if (value) {
+                            final vol = ref.read(progressProvider).musicVolume;
+                            audio.setVolume(vol);
+                          }
                         },
                       ),
                       
                       const Divider(),
                       
-                      // Efectos de sonido
-                      SwitchListTile(
-                        title: const Text('Efectos de sonido'),
-                        subtitle: const Text('Activar efectos de sonido'),
-                        value: progress.soundEffectsEnabled,
-                        onChanged: (value) {
-                          ref.read(progressProvider.notifier).setSoundEffectsEnabled(value);
-                        },
+                      // Volumen de música
+                      ListTile(
+                        title: const Text('Volumen de música'),
+                        subtitle: Slider(
+                          min: 0.0,
+                          max: 1.0,
+                          divisions: 10,
+                          value: progress.musicVolume,
+                          label: '${(progress.musicVolume * 100).round()}%',
+                          onChanged: progress.musicEnabled
+                            ? (v) {
+                                ref.read(progressProvider.notifier).setMusicVolume(v);
+                                ref.read(audioControllerProvider).setVolume(v); // aplica en caliente
+                              }
+                            : null, // esto es para deshabilitar la barrita de musica si el switch esta en off
+                        ),
                       ),
                     ],
                   ),
@@ -187,8 +227,8 @@ class _OptionsScreenState extends ConsumerState<OptionsScreen> {
   }
   */
 
-bool _submitting = false;
 
+/* anulado para hacer el prox con firebase
 Future<void> _handleCodeSubmission(String raw) async {
   if (_submitting) return;
   _submitting = true;
@@ -223,6 +263,44 @@ Future<void> _handleCodeSubmission(String raw) async {
     _submitting = false;
   }
 }
+*/
+
+Future<void> _handleCodeSubmission(String raw) async {
+  if (_submitting) return;
+  setState(() => _submitting = true);
+
+  final code = raw.trim().toUpperCase();
+
+  // 6 chars A-Z/0-9
+  final isValid = RegExp(r'^[A-Z0-9]{6}$').hasMatch(code);
+  if (!isValid) {
+    _showSnackBar('Código inválido. Debe tener 6 caracteres A-Z/0-9.');
+    setState(() => _submitting = false);
+    return;
+  }
+
+  // Cerrar teclado
+  FocusScope.of(context).unfocus();
+
+  try {
+    // 1) Consultar código y registrar canje por usuario (users/{uid}/redeems/{code})
+    final themeId = await ref.read(themeCodeRepoProvider).redeem(code);
+
+    // 2) Actualizar progreso local (agrega themeId a unlockedThemes y persiste)
+    await ref.read(progressProvider.notifier).unlockThemeById(themeId);
+
+    if (!mounted) return;
+    _showSnackBar('¡Tema desbloqueado: $themeId!');
+    _codeController.clear();
+  } catch (e) {
+    if (!mounted) return;
+    final msg = e.toString().replaceFirst('Exception: ', '');
+    _showSnackBar(msg.isEmpty ? 'No se pudo canjear el código' : msg);
+  } finally {
+    if (mounted) setState(() => _submitting = false);
+  }
+}
+
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(

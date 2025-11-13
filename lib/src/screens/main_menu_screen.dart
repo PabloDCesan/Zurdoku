@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/bottom_nav_provider.dart';
-import 'package:flutter/services.dart';
+import 'package:zurdoku/src/widgets/app_bottom_nav_bar.dart';
+//import '../providers/bottom_nav_provider.dart';
+//import 'package:flutter/services.dart';
 import '../widgets/bottom_trapezoid_buttons.dart';
+//import 'package:logging/logging.dart';
+//import '../audio/audio_controller.dart';
 
 class MainMenuScreen extends ConsumerWidget {
   const MainMenuScreen({super.key});
@@ -11,8 +14,8 @@ class MainMenuScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //final theme = Theme.of(context);
-    final bottomNavState = ref.watch(bottomNavProvider);
-    return Scaffold(
+    //final bottomNavState = ref.watch(bottomNavProvider);
+    return AppBottomNavBar( child: Scaffold(
       backgroundColor: Color.fromARGB(255, 235, 140, 33),
       //body: SafeArea(
       body: Container(
@@ -108,7 +111,7 @@ class MainMenuScreen extends ConsumerWidget {
                 text: 'CONTINUAR',
                 //icon: Icons.refresh,
                 onTap: () {
-                  // TODO: Implementar continuar partida guardada
+                  // FALTA: Implementar continuar partida guardada
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('No hay partidas guardadas'),
@@ -157,7 +160,7 @@ class MainMenuScreen extends ConsumerWidget {
           ),
         ),
       ),
-            bottomNavigationBar: BottomNavigationBar(
+            /*bottomNavigationBar: BottomNavigationBar(
               backgroundColor: const Color.fromARGB(255, 30, 35, 43),
               currentIndex: bottomNavState.selectedIndex,
               selectedItemColor: const Color.fromARGB(255, 226, 204, 176),
@@ -170,10 +173,12 @@ class MainMenuScreen extends ConsumerWidget {
               ],
               onTap: (index) => _onItemTapped(context, ref, index),
               type: BottomNavigationBarType.fixed,
-            ),
-    );
+            ),*/
+    ));
+
   }
 
+  /*
   void _onItemTapped(BuildContext context, WidgetRef ref, int index) {
     ref.read(bottomNavProvider.notifier).setSelectedIndex(index);
     
@@ -185,13 +190,14 @@ class MainMenuScreen extends ConsumerWidget {
         context.go('/achievements');
         break;
       case 2:
-        context.go('/about');
+        context.go('/user');
         break;
       case 3:
         SystemNavigator.pop();
         break;
     }
   }
+*/
 
 /*
   Widget _buildMenuButton({

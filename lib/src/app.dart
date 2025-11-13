@@ -8,9 +8,10 @@ import 'screens/difficulty_selection_screen.dart';
 import 'screens/game_screen.dart';
 import 'screens/options_screen.dart';
 import 'screens/achievements_screen.dart';
-import 'screens/about_screen.dart';
+import 'screens/user_login_screen.dart';
 import 'themes/app_theme.dart';
 import 'package:flutter/services.dart';
+import 'widgets/app_lifecycle_audio.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -49,10 +50,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           const NoTransitionPage(child: AchievementsScreen()),
       ),
       GoRoute(
-        path: '/about',
+        path: '/user',
         // builder: (context, state) => const AboutScreen(),
         pageBuilder: (context, state) =>
-          const NoTransitionPage(child: AboutScreen()),
+          const NoTransitionPage(child: UserLoginScreen()),
       ),
     ],
   );
@@ -67,15 +68,17 @@ class MyApp extends ConsumerWidget {
     final currentTheme = ref.watch(currentThemeProvider);
     // Hides the bottom navigation bar and the status bar
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: [SystemUiOverlay.bottom]);
-    
-    return MaterialApp.router(
-      title: 'Zurdoku',
-      theme: currentTheme.lightTheme,
-      darkTheme: currentTheme.darkTheme,
-      themeMode: currentTheme.themeMode,
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
-      
+
+    return AppAudioBootstrap(  
+      child: MaterialApp.router(
+        title: 'Zurdoku',
+        theme: currentTheme.lightTheme,
+        darkTheme: currentTheme.darkTheme,
+        themeMode: currentTheme.themeMode,
+        routerConfig: router,
+        debugShowCheckedModeBanner: false,
+        
+      )
     );
   }
 }

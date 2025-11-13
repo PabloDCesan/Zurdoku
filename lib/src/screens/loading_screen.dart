@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+//import 'package:logging/logging.dart';
+//import '../audio/audio_controller.dart';
+import '../audio/audio_provider.dart';
 
 class LoadingScreen extends ConsumerStatefulWidget {
   const LoadingScreen({super.key});
@@ -10,24 +13,28 @@ class LoadingScreen extends ConsumerStatefulWidget {
 }
 
 class _LoadingScreenState extends ConsumerState<LoadingScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _logoAnimationController;
-  late AnimationController _progressAnimationController;
-  late Animation<double> _logoAnimation;
-  late Animation<double> _progressAnimation;
+  with TickerProviderStateMixin {
+    late AnimationController _logoAnimationController;
+    late AnimationController _progressAnimationController;
+    late Animation<double> _logoAnimation;
+    late Animation<double> _progressAnimation;
 
-  static const _assetsToPrecache = [
-    //cosas para pre cachear
-    'assets/images/mainMenu_clean.png',
-    'assets/images/mainMenu_lineas.png',
-    
-  ];
+    static const _assetsToPrecache = [
+      //cosas para pre cachear
+      'assets/images/mainMenu_clean.png',
+      'assets/images/mainMenu_lineas.png',
+      
+    ];
 
 
-  @override
-  void initState() {
+   @override
+   void initState() {
     super.initState();
-    
+    Future.microtask(() {
+      final audio = ref.read(audioControllerProvider);
+      audio.playMenuMusic();
+    });
+
     _logoAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -59,7 +66,7 @@ class _LoadingScreenState extends ConsumerState<LoadingScreen>
 
   void _startLoading() {
     _logoAnimationController.forward();
-    
+    final audio = ref.read(audioControllerProvider);
     // Iniciar la animación de progreso después de que aparezca el logo
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
@@ -71,9 +78,12 @@ class _LoadingScreenState extends ConsumerState<LoadingScreen>
                 _assetsToPrecache.map((p) => precacheImage(AssetImage(p), context)),
               );
               if (mounted) {
-            context.go('/main-menu');
+                await audio.initialize();
+                if (mounted)
+                  {context.go('/main-menu');}
+                }
               }
-            });
+            );
           }
         });
       }

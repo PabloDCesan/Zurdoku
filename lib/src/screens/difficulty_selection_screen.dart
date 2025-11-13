@@ -43,7 +43,7 @@ class DifficultySelectionScreen extends ConsumerWidget {
                     _buildDifficultyCard(
                       context: context,
                       ref: ref,
-                      difficulty: Difficulty.beginner,
+                      difficulty: Difficulty.facil,
                       title: 'Principiante',
                       description: 'Perfecto para empezar',
                       icon: Icons.child_care,
@@ -56,7 +56,7 @@ class DifficultySelectionScreen extends ConsumerWidget {
                     _buildDifficultyCard(
                       context: context,
                       ref: ref,
-                      difficulty: Difficulty.medium,
+                      difficulty: Difficulty.medio,
                       title: 'Medio',
                       description: 'Un desafío moderado',
                       icon: Icons.psychology,
@@ -69,7 +69,7 @@ class DifficultySelectionScreen extends ConsumerWidget {
                     _buildDifficultyCard(
                       context: context,
                       ref: ref,
-                      difficulty: Difficulty.advanced,
+                      difficulty: Difficulty.avanzado,
                       title: 'Avanzado',
                       description: 'Para jugadores experimentados',
                       icon: Icons.smart_toy,
@@ -82,7 +82,7 @@ class DifficultySelectionScreen extends ConsumerWidget {
                     _buildDifficultyCard(
                       context: context,
                       ref: ref,
-                      difficulty: Difficulty.expert,
+                      difficulty: Difficulty.experto,
                       title: 'Experto',
                       description: 'Un verdadero desafío',
                       icon: Icons.emoji_events,
@@ -95,7 +95,7 @@ class DifficultySelectionScreen extends ConsumerWidget {
                     _buildDifficultyCard(
                       context: context,
                       ref: ref,
-                      difficulty: Difficulty.master,
+                      difficulty: Difficulty.maestro,
                       title: 'Maestro',
                       description: 'Solo para los mejores',
                       icon: Icons.diamond,
